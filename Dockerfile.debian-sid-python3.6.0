@@ -5,6 +5,7 @@ ARG PYTHON_VER=3.6.0
 
 RUN touch /etc/apt/source.list \
     && echo "deb http://ftp.jp.debian.org/debian unstable main contrib non-free" >> /etc/apt/source.list
+    && echo "deb-src  http://ftp.jp.debian.org/debian unstable main contrib non-free" >> /etc/apt/source.list
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y \
   build-essential \
