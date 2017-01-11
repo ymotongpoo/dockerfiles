@@ -1,0 +1,48 @@
+FROM debian:sid
+MAINTAINER Yoshi Yamaguchi ymotongpoo@gmail.com
+
+ARG PYTHON_VER=3.6.0
+
+RUN touch /etc/apt/source.list \
+    && echo "deb http://ftp.jp.debian.org/debian unstable main contrib non-free" >> /etc/apt/source.list
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y \
+  build-essential \
+  wget \
+  zlib1g-dev \
+  bzip2 \
+  libbz2-dev \
+  libreadline6-dev \
+  libjpeg62-turbo \
+  libjpeg62-turbo-dev \
+  libjpeg-dev \
+  libsqlite3-0 \
+  libsqlite3-dev \
+  libgdbm3 \
+  libgdbm-dev \
+  libssl1.1 \
+  libssl-dev \
+  tk8.6-dev
+
+RUN mkdir -p /opt/python/${PYTHON_VER}
+WORKDIR /opt/python/
+RUN wget https://www.python.org/ftp/python/${PYTHON_VER}/Python-${PYTHON_VER}.tgz
+RUN tar xzf Python-${PYTHON_VER}.tgz
+WORKDIR /opt/python/Python-${PYTHON_VER}
+
+RUN ./configure --prefix=/opt/python/${PYTHON_VER} \
+                --with-threads \
+                --with-computed-gotos \
+                --enable-optimizations \
+                --enable-ipv6 \
+                --with-system-expat \
+                --with-dbmliborder=gdbm:ndbm \
+                --with-system-ffi \
+                --with-system-libmpdec \
+                --enable-loadable-sqlite-extensions
+RUN make && make install
+
+RUN useradd -d /home/py3 -m py3
+USER py3
+WORKDIR /home/py3
+
