@@ -3,9 +3,10 @@ MAINTAINER Yoshi Yamaguchi ymotongpoo@gmail.com
 
 LABEL version="0.5"
 
-ARG JUPYTER_WORKDIR=jupyter
 ARG BLAS_VERSION=3.6.0
 ARG LAPACK_VERSION=3.6.1
+ENV JUPYTER_WORKDIR=jupyter
+ENV JUPYTER_NOTEBOOK_PORT=8888
 
 # install required apk packages
 RUN apk update && apk upgrade
@@ -77,5 +78,13 @@ RUN . bin/activate \
 USER root
 RUN apk del --purge -r blas_lapack_deps 
 RUN rm -rf /tmp/blas /tmp/lapack /var/cache/apk/*
+ADD start-notebook.sh /home/jupyter/${JUPYTER_WORKDIR}
+RUN chown jupyter /home/jupyter/${JUPYTER_WORKDIR}/start-notebook.sh \
+    && chmod a+x /home/jupyter/${JUPYTER_WORKDIR}/start-notebook.sh
 USER jupyter
 WORKDIR /home/jupyter
+
+EXPOSE ${JUPYTER_NOTEBOOK_PORT}
+
+ENTRYPOINT ["start-notebook.sh"]
+
