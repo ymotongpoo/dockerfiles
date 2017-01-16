@@ -12,12 +12,10 @@ ENV JUPYTER_NOTEBOOK_PORT=8888
 RUN apk update && apk upgrade
 RUN apk add \
       python3 \
-      python3-dev 
-RUN apk add --virtual=matplotlib_deps \
+      python3-dev \
       libpng \
-      libpng-dev \
       freetype \
-      freetype-dev
+      zeromq 
 RUN apk add --virtual=blas_lapack_deps \
       build-base \
       pkgconfig \
@@ -27,6 +25,10 @@ RUN apk add --virtual=blas_lapack_deps \
       libgfortran \
       gfortran \
       ca-certificates
+RUN apk add --virtual=other_deps \
+      freetype-dev \
+      libpng-dev \
+      zeromq-dev
 
 # build BLAS
 RUN mkdir -p /tmp/blas
@@ -76,15 +78,17 @@ RUN . bin/activate \
       matplotlib 
 
 USER root
-RUN apk del --purge -r blas_lapack_deps 
+RUN apk del --purge -r blas_lapack_deps
+RUN apk del --purge -r other_deps
 RUN rm -rf /tmp/blas /tmp/lapack /var/cache/apk/*
-ADD start-notebook.sh /home/jupyter/${JUPYTER_WORKDIR}
-RUN chown jupyter /home/jupyter/${JUPYTER_WORKDIR}/start-notebook.sh \
-    && chmod a+x /home/jupyter/${JUPYTER_WORKDIR}/start-notebook.sh
+ADD start-notebook.sh /home/jupyter
+RUN chown jupyter /home/jupyter/start-notebook.sh \
+    && chmod a+x /home/jupyter/start-notebook.sh
 USER jupyter
 WORKDIR /home/jupyter
 
 EXPOSE ${JUPYTER_NOTEBOOK_PORT}
 
-ENTRYPOINT ["start-notebook.sh"]
+ENTRYPOINT ["./start-notebook.sh"]
+
 
