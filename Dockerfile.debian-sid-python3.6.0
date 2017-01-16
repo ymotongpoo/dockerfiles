@@ -46,4 +46,3 @@ RUN make && make install
 RUN useradd -d /home/py3 -m py3
 USER py3
 WORKDIR /home/py3
-
