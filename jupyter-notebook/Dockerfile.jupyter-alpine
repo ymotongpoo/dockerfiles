@@ -14,6 +14,10 @@ RUN apk add \
       python3 \
       python3-dev \
       libpng \
+      tiff \
+      jpeg \
+      libwebp \
+      openjpeg \
       freetype \
       zeromq 
 RUN apk add --virtual=blas_lapack_deps \
@@ -28,6 +32,8 @@ RUN apk add --virtual=blas_lapack_deps \
 RUN apk add --virtual=other_deps \
       freetype-dev \
       libpng-dev \
+      libwebp-dev \
+      openjpeg-dev \
       zeromq-dev
 
 # build BLAS
@@ -65,17 +71,12 @@ WORKDIR /home/jupyter
 
 RUN python3 -m venv ${JUPYTER_WORKDIR}
 WORKDIR /home/jupyter/${JUPYTER_WORKDIR}
+ADD requirements.txt .
 RUN . bin/activate \
     && export BLAS=/usr/local/lib/libfblas.so \
     && export LAPACK=/urs/local/lib/liblapack.a \
     && pip3 install --no-cache-dir --upgrade pip \
-    && pip3 install --no-cache-dir \
-      jupyter \
-      numpy \
-      scipy \
-      scikit-learn \
-      pandas \
-      matplotlib 
+    && pip3 install --no-cache-dir -r requirements.txt
 
 USER root
 RUN apk del --purge -r blas_lapack_deps
