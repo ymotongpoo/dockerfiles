@@ -62,7 +62,7 @@ RUN ./configure --prefix=/opt/python/${PYTHON_VER} \
 RUN make && make install
 
 # clean up process
-RUN rm -rf /opt/python/Python-${PYTHON_VER} && rm /opt/python/Python-${PYTHON_VER}
+RUN rm -rf /opt/python/Python-${PYTHON_VER} && rm /opt/python/Python-${PYTHON_VER}.tgz
 RUN apt-get clean
 
 RUN useradd -d /home/${USERNAME} -m ${USERNAME}
