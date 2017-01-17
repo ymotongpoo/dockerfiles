@@ -24,9 +24,12 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y \
   build-essential \
   wget \
+  bash \
   zlib1g-dev \
   bzip2 \
   libbz2-dev \
+  libmpdec2 \
+  libmpdec-dev \
   libreadline6-dev \
   libjpeg62-turbo \
   libjpeg62-turbo-dev \
