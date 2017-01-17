@@ -1,0 +1,18 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+
+before_script:
+  - docker info
+  - docker login -u ${BINTRAY_USERNAME} -p ${BINTRAY_APIKEY} -e ${BINTRAY_EMAIL} ${BINTRAY_USERNAME}-docker-registry.bintray.io
+
+build:
+  stage: build
+  script:
+    - docker build -t ${BINTRAY_USERNAME}/debian-sid-py3.6.0 .
+    - docker push ${BINTRAY_USERNAME/debian-sid-py3.6.0
+
