@@ -57,11 +57,15 @@ RUN ./configure --prefix=/opt/python/${PYTHON_VER} \
                 --enable-loadable-sqlite-extensions
 
 RUN make && make install
-RUN rm -rf Python-${PYTHON_VER} && rm Python-${PYTHON_VER}
+
+# clean up process
+RUN rm -rf /opt/python/Python-${PYTHON_VER} && rm /opt/python/Python-${PYTHON_VER}
+RUN apt-get clean
 
 RUN useradd -d /home/${USERNAME} -m ${USERNAME}
 USER ${USERNAME}
 RUN touch /home/${USERNAME}/.bashrc \
     && echo 'PATH=/opt/python/${PYTHON_VER}/bin:$PATH' >> /home/${USERNAME}/.bashrc
 WORKDIR /home/${USERNAME}
+
 
