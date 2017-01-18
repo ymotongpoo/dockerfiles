@@ -14,5 +14,5 @@ build:
   stage: build
   script:
     - docker build -t ${BINTRAY_USERNAME}/debian-sid-py3.6.0 .
-    - docker push ${BINTRAY_USERNAME/debian-sid-py3.6.0
+    - docker push ${BINTRAY_USERNAME}/debian-sid-py3.6.0
 
