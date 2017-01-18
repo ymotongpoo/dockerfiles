@@ -20,7 +20,7 @@ ENV JUPYTER_NOTEBOOK_PORT=8888
 
 USER root
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y apt-utils
+RUN apt-get install -y apt-utils \
   file \
   libjpeg-dev \
   libtiff5 \
