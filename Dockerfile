@@ -17,10 +17,8 @@ MAINTAINER Yoshi Yamaguchi <ymotongpoo@gmail.com>
 ARG PYTHON_VER=3.6.0
 ENV JUPYTER_WORKDIR=jupyter
 ENV JUPYTER_NOTEBOOK_PORT=8888
-# add unstable package source list
-RUN touch /etc/apt/source.list \
-    && echo "deb http://ftp.jp.debian.org/debian unstable main contrib non-free" >> /etc/apt/source.list \
-    && echo "deb-src  http://ftp.jp.debian.org/debian unstable main contrib non-free" >> /etc/apt/source.list
+
+USER root
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y apt-utils
   file \
@@ -33,6 +31,7 @@ RUN apt-get install -y apt-utils
   liblapack-dev \
   libatlas3-base \
   libatlas-dev
+USER py3
 
 # setting for venv
 RUN /opt/python/${PYTHON_VER}/bin/python3 -E -m venv ${JUPYTER_WORKDIR}
