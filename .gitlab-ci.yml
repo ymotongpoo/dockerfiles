@@ -13,7 +13,6 @@ build:
   stage: build
   script:
     - docker login -u ${BINTRAY_USERNAME} -p ${BINTRAY_APIKEY} -e ${BINTRAY_EMAIL} ${BINTRAY_USERNAME}-docker-registry.bintray.io
-    - docker build -t ${BINTRAY_USERNAME}/debian-sid-py3.6.0 .
-    - docker tag ${BINTRAY_USERNAME}-docker-registry.bintray.io/python/debian-sid:3.6.0
+    - docker build -t ${BINTRAY_USERNAME}-docker-registry.bintray.io/python/debian-sid:3.6.0 .
     - docker push ${BINTRAY_USERNAME}-docker-registry.bintray.io/python/debian-sid:3.6.0
 
