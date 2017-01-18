@@ -11,7 +11,7 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-FROM ymotongpoo/debian-sid-py3.6.0
+FROM ymotongpoo-docker-registry.bintray.io/python/debian-sid:3.6.0
 MAINTAINER Yoshi Yamaguchi <ymotongpoo@gmail.com>
 
 ARG PYTHON_VER=3.6.0
