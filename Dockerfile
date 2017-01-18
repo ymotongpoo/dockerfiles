@@ -15,6 +15,7 @@ FROM ymotongpoo-docker-registry.bintray.io/python/debian-sid:3.6.0
 MAINTAINER Yoshi Yamaguchi <ymotongpoo@gmail.com>
 
 ARG PYTHON_VER=3.6.0
+ARG USERNAME=py36
 ENV JUPYTER_WORKDIR=jupyter
 ENV JUPYTER_NOTEBOOK_PORT=8888
 
@@ -31,23 +32,23 @@ RUN apt-get install -y apt-utils \
   liblapack-dev \
   libatlas3-base \
   libatlas-dev
-USER py3
+USER ${USERNAME}
 
 # setting for venv
 RUN /opt/python/${PYTHON_VER}/bin/python3 -E -m venv ${JUPYTER_WORKDIR}
-WORKDIR /home/py3/${JUPYTER_WORKDIR}
+WORKDIR /home/${USERNAME}/${JUPYTER_WORKDIR}
 ADD requirements.txt .
 USER root
-RUN chown py3 ./requirements.txt
-USER py3
+RUN chown ${USERNAME} ./requirements.txt
+USER ${USERNAME}
 RUN . bin/activate \
     && pip3 install -r requirements.txt
 
-WORKDIR /home/py3
+WORKDIR /home/${USERNAME}
 ADD start-notebook.sh .
 USER root
-RUN chown py3 start-notebook.sh
-USER py3
+RUN chown ${USERNAME} start-notebook.sh
+USER ${USERNAME}
 RUN chmod a+x start-notebook.sh
 
 EXPOSE ${JUPYTER_NOTEBOOK_PORT}
