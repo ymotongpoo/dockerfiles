@@ -18,8 +18,10 @@ LABEL version="0.5"
 
 ARG BLAS_VERSION=3.6.0
 ARG LAPACK_VERSION=3.6.1
+ARG USERNAME=jupyter
 ENV JUPYTER_WORKDIR=jupyter
 ENV JUPYTER_NOTEBOOK_PORT=8888
+
 
 # install required apk packages
 RUN apk update && apk upgrade
@@ -47,7 +49,11 @@ RUN apk add --virtual=other_deps \
       libpng-dev \
       libwebp-dev \
       openjpeg-dev \
-      zeromq-dev
+      zeromq-dev \
+      tiff-dev \
+      jpeg-dev \
+      lcms2-dev \
+      zlib-dev
 
 # build BLAS
 RUN mkdir -p /tmp/blas
@@ -78,28 +84,31 @@ RUN mv /tmp/libfblas.a /tmp/libfblas.so /tmp/liblapack.a /usr/local/lib
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h # to build scipy
 
 # set normal user
-RUN adduser -s /bin/bash -D -h /home/jupyter jupyter
-USER jupyter
-WORKDIR /home/jupyter
+RUN adduser -s /bin/bash -D -h /home/${USERNAME} ${USERNAME}
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}
 
 RUN python3 -m venv ${JUPYTER_WORKDIR}
-WORKDIR /home/jupyter/${JUPYTER_WORKDIR}
+WORKDIR /home/${USERNAME}/${JUPYTER_WORKDIR}
+USER root
 ADD requirements.txt .
+RUN chown ${USERNAME} requirements.txt
+USER ${USERNAME}
 RUN . bin/activate \
     && export BLAS=/usr/local/lib/libfblas.so \
     && export LAPACK=/urs/local/lib/liblapack.a \
     && pip3 install --no-cache-dir --upgrade pip \
-    && pip3 install --no-cache-dir -r requirements.txt
+    && CFLAGS="$CFLAGS -L/lib" pip3 install --no-cache-dir -r requirements.txt
 
 USER root
 RUN apk del --purge -r blas_lapack_deps
 RUN apk del --purge -r other_deps
 RUN rm -rf /tmp/blas /tmp/lapack /var/cache/apk/*
-ADD start-notebook.sh /home/jupyter
-RUN chown jupyter /home/jupyter/start-notebook.sh \
-    && chmod a+x /home/jupyter/start-notebook.sh
-USER jupyter
-WORKDIR /home/jupyter
+ADD start-notebook.sh /home/${USERNAME}
+RUN chown ${USERNAME} /home/${USERNAME}/start-notebook.sh \
+    && chmod a+x /home/${USERNAME}/start-notebook.sh
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}
 
 EXPOSE ${JUPYTER_NOTEBOOK_PORT}
 
