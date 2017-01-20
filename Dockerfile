@@ -24,12 +24,22 @@ RUN apk add \
       wget \
       ca-certificates \
       bash \
-      ocaml 
+      make \
+      build-base \
+      m4 \
+      ocaml \
+      opam \
+      git \
+      mercurial
 
 # set normal user
 RUN adduser -s /bin/bash -D -h /home/${USERNAME} ${USERNAME}
+ADD .ocamlinit /home/${USERNAME} 
+RUN chown ${USERNAME} /home/${USERNAME}/.ocamlinit
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
-RUN mkdir -p /home/${USERNAME}/bin
-RUN wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /home/${USERNAME}/bin
-
+RUN mkdir -p /home/${USERNAME}/ocaml
+VOLUME /home/${USERNAME}/ocaml
+RUN opam init
+RUN eval `opam config env` \
+    && . /home/ocaml/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
