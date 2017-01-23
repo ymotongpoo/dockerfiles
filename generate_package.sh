@@ -11,12 +11,13 @@ cd ${built_go_dir}
 rev=`git rev-parse --short HEAD`
 
 # create control file
+epoch=`date +%s`
 cd ${debian_workroot}
 touch ${control_file}
-echo "Package: golang" >> ${control_file}
+echo "Package: golang-nightly" >> ${control_file}
 echo "Maintainer: Yoshi Yamaguchi <ymotongpoo@gmail.com>" >> ${control_file}
 echo "Architecture: amd64" >> ${control_file}
-echo "Version: ${rev}" >> ${control_file}
+echo "Version: ${epoch}:${rev}" >> ${control_file}
 echo "Section: devel" >> ${control_file}
 echo "Priority: extra" >> ${control_file}
 echo "Homepage: https://golang.org/" >> ${control_file}
