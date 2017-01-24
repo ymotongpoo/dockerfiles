@@ -29,6 +29,7 @@ RUN touch /etc/apt/source.list \
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install --no-install-recommends --no-install-suggests -y \
       wget \
+      curl \
       ca-certificates \
       bash \
       build-essential \
